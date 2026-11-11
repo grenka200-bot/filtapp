@@ -1,5 +1,5 @@
 #include "spec_print.h"
-#include "modules/lowpass_filter.h"
+#include "modules/highpass_filter.h"
 #include "modules/dft_api.h"
 #include "modules/dft_matr.h"
 #include <stdio.h>
@@ -22,11 +22,11 @@ int main (int argc, char *argv[]) {
     }
     (void)printf("dft done\n");
 
-    if (lowpass_filter(spec, sizeof(spec) / sizeof(spec[0]), 0.25) < 0) {
-        (void)printf("error in lowpass_filter\n");
+    if (highpass_filter(spec, sizeof(spec) / sizeof(spec[0]), 0.25) < 0) {
+        (void)printf("error in highpass_filter\n");
         return -1;
     }
-    (void)printf("lowpass done\n");
+    (void)printf("highass done\n");
     
 
     return 0;
