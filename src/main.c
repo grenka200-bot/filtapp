@@ -4,6 +4,8 @@
 
 int main (int argc, char *argv[]) {
 
+    // if --lowpass 1/4, то выключаем бины 4-15
+    // if --hightpass 1/4, то выключаем бины 0-11
 
     (void)printf("filtapp\n");
 
