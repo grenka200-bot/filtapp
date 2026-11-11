@@ -1,4 +1,5 @@
 #include "dft_matr.h"
+#include "spec_print.h"
 #include <stdio.h>
 #include <stddef.h>
 
