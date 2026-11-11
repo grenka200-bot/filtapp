@@ -19,4 +19,31 @@ jobs:
 
       - name: Build project
         run: make
+ 
+  docs_job:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Install Doxygen
+        run: sudo apt-get update && sudo apt-get install -y doxygen
+
+      - name: Generate HTML documentation
+        run: |
+          ( doxygen -g - ; \
+            echo 'PROJECT_NAME = "FiltApp"' ; \
+            echo 'OUTPUT_LANGUAGE = Russian' ; \
+            echo 'INPUT = src' ; \
+            echo 'RECURSIVE = YES' ; \
+            echo 'EXTRACT_ALL = YES' ; \
+            echo 'HAVE_DOT = YES' ; \
+            echo 'CALL_GRAPH = YES' ) | doxygen -
+
+      - name: Upload documentation archive
+        uses: actions/upload-artifact@v4
+        with:
+          name: doxygen-html-docs
+          path: html/
 
