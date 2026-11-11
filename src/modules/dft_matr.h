@@ -1,3 +1,5 @@
+#pragma once
+
 #include <complex.h>
 
 // размер матрицы ДПФ
