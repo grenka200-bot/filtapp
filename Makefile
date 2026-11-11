@@ -8,9 +8,9 @@ CFLAGS = -Wall
 
 all: filtapp
 
-filtapp: src/main.c
+filtapp: src/main.c src/dft_matr.c
 	mkdir -p build
-	$(CC) $(CFLAGS) src/main.c -o build/filtapp
+	$(CC) $(CFLAGS) src/main.c src/dft_matr.c -o build/filtapp
 
 clean: 
 	rm -rf build
