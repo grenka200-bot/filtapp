@@ -1,0 +1,67 @@
+name: C/C++ CI Pipeline
+
+on:
+  push:
+    branches: [ "**" ]
+  pull_request:
+    branches: [ "main", "dev" ]
+
+jobs:
+  build_job:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Install dependencies
+        run: sudo apt-get update && sudo apt-get install -y gcc make
+
+      - name: Build project
+        run: make filtapp
+
+      - name: Upload build artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: build-binaries
+          path: build/
+
+  test_job:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+      - name: Install GTest and compilers
+        run: sudo apt-get update && sudo apt-get install -y g++ libgtest-dev
+      - name: Compile and run unit tests
+        run: |
+             make tests
+             ./build/lowpass_filter_tests
+
+  docs_job:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Install Doxygen
+        run: sudo apt-get update && sudo apt-get install -y doxygen
+
+      - name: Generate HTML documentation
+        run: |
+          ( doxygen -g - ; \
+            echo 'PROJECT_NAME = "FiltApp"' ; \
+            echo 'OUTPUT_LANGUAGE = Russian' ; \
+            echo 'INPUT = src' ; \
+            echo 'RECURSIVE = YES' ; \
+            echo 'EXTRACT_ALL = YES' ; \
+            echo 'HAVE_DOT = YES' ; \
+            echo 'CALL_GRAPH = YES' ) | doxygen -
+
+      - name: Upload documentation archive
+        uses: actions/upload-artifact@v4
+        with:
+          name: doxygen-html-docs
+          path: html/
+
