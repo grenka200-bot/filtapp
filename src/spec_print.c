@@ -103,6 +103,30 @@ int spec_render(const double* data, size_t len, size_t height, char* out_buf, si
     return 0;
 }
 
+static size_t spec_downsample(const double* src, size_t src_len, double* dst, size_t max_bins) {
+    if (!src || !dst || src_len == 0 || max_bins == 0) {
+        return 0;
+    }
+    if (src_len <= max_bins) {
+        for (size_t i = 0; i < src_len; ++i) {
+            dst[i] = fabs(src[i]);
+        }
+        return src_len;
+    }
+    for (size_t b = 0; b < max_bins; ++b) {
+        size_t start = (b * src_len) / max_bins;
+        size_t end = ((b + 1) * src_len) / max_bins;
+        double peak = 0.0;
+        for (size_t i = start; i < end; ++i) {
+            double v = fabs(src[i]);
+            if (v > peak) {
+                peak = v;
+            }
+        }
+        dst[b] = peak;
+    }
+    return max_bins;
+}
 
 
 

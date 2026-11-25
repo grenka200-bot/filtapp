@@ -69,4 +69,31 @@ TEST(SpecRenderTest, RendersZeroSpectrumAsEmptyGrid) {
     );
 }
 
+TEST(SpecRenderTest, RendersBarsWithBlock219) {
+    double data[] = {0.25, 1.0, 0.5};
+    char buf[256] = {0};
+    int res = spec_render(data, 3, 4, buf, sizeof(buf));
+
+    EXPECT_EQ(res, 0);
+    EXPECT_STREQ(buf,
+        "|   \xE2\x96\x88  \n"
+        "|   \xE2\x96\x88  \n"
+        "|   \xE2\x96\x88 \xE2\x96\x88\n"
+        "| \xE2\x96\x88 \xE2\x96\x88 \xE2\x96\x88\n"
+        "+------\n"
+    );
+}
+
+TEST(SpecMathTest, DownsamplesSpectrumPreservingPeaks) {
+    double src[] = {0.1, 0.9, 0.2, 0.4, 0.8, 0.3};
+    double dst[3] = {0};
+    size_t out_len = spec_downsample(src, 6, dst, 3);
+
+    EXPECT_EQ(out_len, 3u);
+    EXPECT_DOUBLE_EQ(dst[0], 0.9);
+    EXPECT_DOUBLE_EQ(dst[1], 0.4);
+    EXPECT_DOUBLE_EQ(dst[2], 0.8);
+}
+
+
 
