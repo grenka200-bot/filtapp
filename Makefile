@@ -16,9 +16,10 @@ filtapp: src/main.c src/modules/dft_matr.c src/modules/dft_api.c src/modules/low
 
 tests:
 	mkdir -p build
-	$(CC) $(CFLAGS) -c src/modules/lowpass_filter.c -o build/lowpass_filter.o
-	$(CPP) $(CFLAGS) src/tests/lowpass_filter_tests.cc build/lowpass_filter.o -o build/lowpass_filter_tests -lgtest -lgtest_main -pthread -lm
-	rm -rf build/lowpass_filter.o
+	$(CC) $(CFLAGS) -c src/spec_print.c -o build/spec_print.o
+	$(CPP) $(CFLAGS) src/tests/spec_print_tests.cc build/spec_print.o -o build/spec_print_tests -lgtest_main -lgtest -pthread -lm -L/usr/local/lib
+	rm -rf build/spec_print.o
+
 
 clean: 
 	rm -rf build
