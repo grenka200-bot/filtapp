@@ -35,6 +35,12 @@ TEST(SpecGridTest, ProtectsAgainstNullAndSmallBuffer) {
     EXPECT_LT(spec_render_grid(3, 3, small_buf, sizeof(small_buf)), 0);
 }
 
+TEST(SpecMathTest, FindsMaxAmplitude) {
+    double data[] = {0.2, 1.5, 0.8, 1.5};
+    EXPECT_DOUBLE_EQ(spec_find_max(data, 4), 1.5);
+    EXPECT_DOUBLE_EQ(spec_find_max(NULL, 4), 0.0);
+    EXPECT_DOUBLE_EQ(spec_find_max(data, 0), 0.0);
+}
 
 
 

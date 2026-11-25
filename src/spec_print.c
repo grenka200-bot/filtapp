@@ -1,5 +1,22 @@
 #include "spec_print.h"
 #include <stddef.h>
+#include <math.h>
+
+
+static double spec_find_max(const double* data, size_t len) {
+    if (!data || len == 0) {
+        return 0.0;
+    }
+    double max_val = 0.0;
+    for (size_t i = 0; i < len; ++i) {
+        double v = fabs(data[i]);
+        if (v > max_val) {
+            max_val = v;
+        }
+    }
+
+    return max_val;
+}
 
 int spec_render_grid(size_t width, size_t height, char* out_buf, size_t buf_size) {
 
