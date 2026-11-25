@@ -9,6 +9,18 @@ TEST(SpecGridTest, ScalesGridWidth) {
     EXPECT_STREQ(buf, "|      \n+------\n");
 }
 
+TEST(SpecGridTest, ScalesGridHeight) {
+    char buf[256] = {0};
+    int res = spec_render_grid(3, 3, buf, sizeof(buf));
+
+    EXPECT_EQ(res, 0);
+    EXPECT_STREQ(buf,
+        "|      \n"
+        "|      \n"
+        "|      \n"
+        "+------\n"
+    );
+}
 
 
 
