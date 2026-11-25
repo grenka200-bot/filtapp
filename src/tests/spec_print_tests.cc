@@ -109,4 +109,23 @@ TEST(SpecRenderTest, LimitsOutputWidthForLargeArrays) {
     EXPECT_EQ(strlen(last_line), 1u + 32u * 2u + 1u); // '+' + 64 '-' + '\n'
 }
 
+TEST(SpecRenderTest, IncludesAxisLabels) {
+    double data[] = {1.0};
+    char buf[256] = {0};
+    int res = spec_render_labeled(data, 1, 1, buf, sizeof(buf));
+
+    EXPECT_EQ(res, 0);
+    EXPECT_STREQ(buf,
+        "A ^\n"
+        "  | \xE2\x96\x88\n"
+        "  +--> f\n"
+    );
+}
+
+TEST(SpecPrintIntegrationTest, PrintsSpectrumToConsoleSuccessfully) {
+    double data[] = {0.2, 0.5, 1.0, 0.7, 0.3, 0.1};
+    EXPECT_EQ(spec_print(data, 6), 0);
+    EXPECT_LT(spec_print(NULL, 6), 0);
+    EXPECT_LT(spec_print(data, 0), 0);
+}
 

@@ -2,6 +2,7 @@
 #include <stddef.h>
 #include <math.h>
 #include <string.h>
+#include <stdio.h>
 
 #define BAR_BLOCK "\xE2\x96\x88"
 
@@ -130,9 +131,64 @@ int spec_render(const double* data, size_t len, size_t height, char* out_buf, si
     return 0;
 }
 
+int spec_render_labeled(const double* data, size_t len, size_t height, char* out_buf, size_t buf_size) {
+    if (!data || !out_buf || len == 0 || height == 0) {
+        return -1;
+    }
+    double bins[SPEC_MAX_WIDTH];
+    size_t width = spec_downsample(data, len, bins, SPEC_MAX_WIDTH);
 
+    // Шапка "A ^\n" (4) + строки с отступом "  |" (3) + нижняя ось "  +--> f\n"
+    size_t required = 4 + (width * 4 + 4) * height + (width * 2 + 8) + 1;
+    if (buf_size < required) {
+        return -2;
+    }
 
+    double max_val = spec_find_max(bins, width);
+    size_t pos = 0;
 
+    memcpy(out_buf + pos, "A ^\n", 4);
+    pos += 4;
 
+    for (size_t row = 0; row < height; ++row) {
+        size_t level = height - row;
+        memcpy(out_buf + pos, "  |", 3);
+        pos += 3;
+        for (size_t i = 0; i < width; ++i) {
+            out_buf[pos++] = ' ';
+            size_t bar_h = spec_calc_bar_height(bins[i], max_val, height);
+            if (bar_h >= level) {
+                memcpy(out_buf + pos, BAR_BLOCK, 3);
+                pos += 3;
+            } else {
+                out_buf[pos++] = ' ';
+            }
+        }
+        out_buf[pos++] = '\n';
+    }
 
+    memcpy(out_buf + pos, "  +", 3);
+    pos += 3;
+    for (size_t i = 0; i < width * 2; ++i) {
+        out_buf[pos++] = '-';
+    }
+    memcpy(out_buf + pos, "> f\n", 4);
+    pos += 4;
+    out_buf[pos] = '\0';
+
+    return 0;
+}
+
+int spec_print(const double* data, size_t len) {
+    if (!data || len == 0) {
+        return -1;
+    }
+    char buf[4096] = {0};
+    int status = spec_render_labeled(data, len, 10, buf, sizeof(buf));
+    if (status != 0) {
+        return status;
+    }
+    printf("%s", buf);
+    return 0;
+}
 
