@@ -42,6 +42,31 @@ TEST(SpecMathTest, FindsMaxAmplitude) {
     EXPECT_DOUBLE_EQ(spec_find_max(data, 0), 0.0);
 }
 
+TEST(SpecMathTest, CalculatesDiscreteBarHeight) {
+    EXPECT_EQ(spec_calc_bar_height(1.0, 1.0, 4), 4u);
+    EXPECT_EQ(spec_calc_bar_height(0.5, 1.0, 4), 2u);
+    EXPECT_EQ(spec_calc_bar_height(0.0, 1.0, 4), 0u);
+    EXPECT_EQ(spec_calc_bar_height(50.0, 100.0, 4), 2u);
+}
 
+TEST(SpecMathTest, HandlesEdgeCasesInBarHeight) {
+    EXPECT_EQ(spec_calc_bar_height(0.0, 0.0, 4), 0u);
+    EXPECT_EQ(spec_calc_bar_height(0.01, 1.0, 4), 0u);
+    EXPECT_EQ(spec_calc_bar_height(-1.0, 1.0, 4), 4u);
+    EXPECT_EQ(spec_calc_bar_height(2.0, 1.0, 4), 4u);
+}
+
+TEST(SpecRenderTest, RendersZeroSpectrumAsEmptyGrid) {
+    double data[] = {0.0, 0.0, 0.0};
+    char buf[256] = {0};
+    int res = spec_render(data, 3, 2, buf, sizeof(buf));
+
+    EXPECT_EQ(res, 0);
+    EXPECT_STREQ(buf,
+        "|      \n"
+        "|      \n"
+        "+------\n"
+    );
+}
 
 
