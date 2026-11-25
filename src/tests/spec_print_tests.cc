@@ -95,5 +95,18 @@ TEST(SpecMathTest, DownsamplesSpectrumPreservingPeaks) {
     EXPECT_DOUBLE_EQ(dst[2], 0.8);
 }
 
+TEST(SpecRenderTest, LimitsOutputWidthForLargeArrays) {
+    double data[100];
+    for (int i = 0; i < 100; ++i) {
+        data[i] = (i == 50) ? 1.0 : 0.0;
+    }
+    char buf[4096] = {0};
+    int res = spec_render(data, 100, 2, buf, sizeof(buf));
+
+    EXPECT_EQ(res, 0);
+    const char* last_line = strchr(buf, '+');
+    ASSERT_NE(last_line, nullptr);
+    EXPECT_EQ(strlen(last_line), 1u + 32u * 2u + 1u); // '+' + 64 '-' + '\n'
+}
 
 
