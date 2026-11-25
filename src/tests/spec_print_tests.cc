@@ -22,5 +22,20 @@ TEST(SpecGridTest, ScalesGridHeight) {
     );
 }
 
+TEST(SpecGridTest, RejectsZeroDimensions) {
+    char buf[256] = {0};
+    EXPECT_LT(spec_render_grid(0, 3, buf, sizeof(buf)), 0);
+    EXPECT_LT(spec_render_grid(3, 0, buf, sizeof(buf)), 0);
+}
+
+
+TEST(SpecGridTest, ProtectsAgainstNullAndSmallBuffer) {
+    char small_buf[4] = {0};
+    EXPECT_LT(spec_render_grid(3, 3, NULL, 100), 0);
+    EXPECT_LT(spec_render_grid(3, 3, small_buf, sizeof(small_buf)), 0);
+}
+
+
+
 
 
